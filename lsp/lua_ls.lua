@@ -8,7 +8,7 @@ return {
                 globals = { "vim", "require", "print" }
             },
             runtime = {
-                version = "JuaJIT",
+                version = "LuaJIT",
             }
         }
     }

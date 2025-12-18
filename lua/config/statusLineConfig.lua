@@ -1,29 +1,40 @@
+--- Configures the statusline using Feline.nvim.
+
 ---@diagnostic disable-next-line: missing-fields
 local colors = require("tokyonight.colors").setup({ style = "night" })
 local util = require("tokyonight.util")
 
+StatusLineBackgroundColor = colors.dark3
+
+-- Darkens a color, for use by the background of the diagnostics
 local function darkend(color)
     return util.darken(color, 0.3)
 end
 
+-- Gets the next active severity color, so that the highlight can be correct across the seperators between diagnostic components
 local function getNextActiveSeverityColor(severity)
+    -- Map of severities to colors
     local diagnosticColorsMap = {}
     diagnosticColorsMap[vim.diagnostic.severity.ERROR] = colors.error
     diagnosticColorsMap[vim.diagnostic.severity.WARN] = colors.warning
     diagnosticColorsMap[vim.diagnostic.severity.HINT] = colors.hint
     diagnosticColorsMap[vim.diagnostic.severity.INFO] = colors.info
 
+    -- If the count of the diagnostic one less than this one (1 = ERROR, 4 = HINT) is present on the current buffer, return that color darkened
     while severity > 0 do
         if vim.diagnostic.count(0)[severity - 1] ~= nil then
-            return util.darken(darkend(diagnosticColorsMap[severity - 1]), 0.5)
+            return darkend(diagnosticColorsMap[severity - 1])
         end
         severity = severity - 1
     end
 
-    return colors.dark3
+    -- If not, return the default background color for the status line
+    return StatusLineBackgroundColor
 end
 
 -- Generates a component table for the given diagnostic
+-- Note: This currently generates the table for a component showing up in the bottom right, and disappearing when
+-- the diagnostic is not present in the current buffer.
 local function generateDiagnosticComponentTable(severity, color, icon)
     return {
         provider = function()
@@ -47,7 +58,7 @@ local function generateDiagnosticComponentTable(severity, color, icon)
                 str = "left_rounded",
                 hl = {
                     fg = darkend(color),
-                    bg = util.brighten(getNextActiveSeverityColor(severity), 0.7),
+                    bg = getNextActiveSeverityColor(severity) -- Used so seperator colors are correct
                 },
             }
         end,
@@ -60,6 +71,7 @@ local function generateDiagnosticComponentTable(severity, color, icon)
     }
 end
 
+-- Config function to be passed as the config function for the plugin (see lua/plugins/statusLine.lua)
 function FelineConfig()
     local feline = require("feline")
 
@@ -75,6 +87,7 @@ function FelineConfig()
         COMMAND = colors.magenta,
     }
 
+    -- Table that contains all components
     local c = {
         vi_mode = {
             provider = {
@@ -128,7 +141,7 @@ function FelineConfig()
         diagnostic_info = generateDiagnosticComponentTable(vim.diagnostic.severity.INFO, colors.info, "󰋽"),
     }
 
-    -- TODO search count, for the middle or right
+    -- Layout of components for the active buffer
     local active = {
         -- left
         {
@@ -138,7 +151,7 @@ function FelineConfig()
         },
         -- middle
         {
-
+            -- TODO search count
         },
         -- right
         {
@@ -146,11 +159,10 @@ function FelineConfig()
             c.diagnostic_warnings,
             c.diagnostic_info,
             c.diagnostic_hints,
-            --TODO IDEKKKK LOOK AT SOME EXAMPLES. DEFINITELY DIAGNOSTICS WITH THE EXPANDING WINDOWS THING WITH THE SEPERATORS
         }
     }
 
-    -- TODO entire inactive
+    -- Layout of compoonents for inactive buffers
     local inactive = {
         -- left
         {
@@ -172,4 +184,5 @@ function FelineConfig()
     })
 end
 
+-- Return this table so that the plugin file can require this one and use this function as the config
 return { FelineConfig = FelineConfig }
