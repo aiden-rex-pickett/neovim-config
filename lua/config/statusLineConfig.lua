@@ -16,16 +16,9 @@ local function darkend(color)
     return util.darken(color, 0.3)
 end
 
-<<<<<<< HEAD
--- Gets the next active severity color, so that the highlight can be correct across the seperators between diagnostic components
--- @param severity the severity of the error (given by vim.diagnostic.severity enum)
--- @returns The color of the next severity, next defined as the severity more severe than the one passed (i.e error or warning if passed info, etc)
---          if there are no active diagnostics of higher severity, it returns the statusline background color
-=======
 --- Gets the next active severity color, so that the highlight can be correct across the seperators between diagnostic components
 --- @param severity vim.diagnostic.severity The severity of the current component
 --- @return string Color The color of the next more severe severity that is active in the current buffer (count > 0)
->>>>>>> 3f58b29 (updated documentation in statusline config file)
 local function getNextActiveSeverityColor(severity)
     -- Map of severities to colors
     local diagnosticColorsMap = {}
@@ -157,6 +150,21 @@ function FelineConfig()
         diagnostic_warnings = generateDiagnosticComponentTable(vim.diagnostic.severity.WARN, colors.warning, ""),
         diagnostic_hints = generateDiagnosticComponentTable(vim.diagnostic.severity.HINT, colors.hint, ""),
         diagnostic_info = generateDiagnosticComponentTable(vim.diagnostic.severity.INFO, colors.info, "󰋽"),
+        -- The filename for nonactive buffers
+        bland_file_name = {
+            provider = {
+                name = 'file_info',
+                opts = {
+                    file_modified_icon = '󰝒',
+                    file_readonly_icon = '󰈡',
+                },
+            },
+            hl = {
+                fg = colors.comment,
+                bg = "#222436", -- Background color
+            },
+            left_sep = "block",
+        },
     }
 
     -- Layout of components for the active buffer
@@ -184,7 +192,7 @@ function FelineConfig()
     local inactive = {
         -- left
         {
-
+            c.file_name
         },
         -- middle
         {
