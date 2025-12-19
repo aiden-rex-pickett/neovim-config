@@ -1,20 +1,31 @@
 --- Configures the statusline using Feline.nvim.
 
+--- Alias for the integer representing severity
+--- @alias vim.diagnostic.severity integer
+
 ---@diagnostic disable-next-line: missing-fields
 local colors = require("tokyonight.colors").setup({ style = "night" })
 local util = require("tokyonight.util")
 
 StatusLineBackgroundColor = colors.dark3
 
--- Darkens a color, for use by the background of the diagnostics
+--- Darkens a color, for use by the background of the diagnostics
+--- @param color string The string representing the color to darken
+--- @return string darkendColor the darkened version of the passed color
 local function darkend(color)
     return util.darken(color, 0.3)
 end
 
+<<<<<<< HEAD
 -- Gets the next active severity color, so that the highlight can be correct across the seperators between diagnostic components
 -- @param severity the severity of the error (given by vim.diagnostic.severity enum)
 -- @returns The color of the next severity, next defined as the severity more severe than the one passed (i.e error or warning if passed info, etc)
 --          if there are no active diagnostics of higher severity, it returns the statusline background color
+=======
+--- Gets the next active severity color, so that the highlight can be correct across the seperators between diagnostic components
+--- @param severity vim.diagnostic.severity The severity of the current component
+--- @return string Color The color of the next more severe severity that is active in the current buffer (count > 0)
+>>>>>>> 3f58b29 (updated documentation in statusline config file)
 local function getNextActiveSeverityColor(severity)
     -- Map of severities to colors
     local diagnosticColorsMap = {}
@@ -35,9 +46,13 @@ local function getNextActiveSeverityColor(severity)
     return StatusLineBackgroundColor
 end
 
--- Generates a component table for the given diagnostic
--- Note: This currently generates the table for a component showing up in the bottom right, and disappearing when
--- the diagnostic is not present in the current buffer.
+--- Generates a component table for the given diagnostic
+--- Note: This currently generates the table for a component showing up in the bottom right, and disappearing when
+--- the diagnostic is not present in the current buffer.
+--- @param severity vim.diagnostic.severity What severity this component will track
+--- @param color string color of the component
+--- @param icon string icon for the component
+--- @return table componentTable The component table representing the component created
 local function generateDiagnosticComponentTable(severity, color, icon)
     return {
         provider = function()
@@ -74,7 +89,7 @@ local function generateDiagnosticComponentTable(severity, color, icon)
     }
 end
 
--- Config function to be passed as the config function for the plugin (see lua/plugins/statusLine.lua)
+--- Config function to be passed as the config function for the plugin (see lua/plugins/statusLine.lua)
 function FelineConfig()
     local feline = require("feline")
 
