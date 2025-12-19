@@ -12,6 +12,9 @@ local function darkend(color)
 end
 
 -- Gets the next active severity color, so that the highlight can be correct across the seperators between diagnostic components
+-- @param severity the severity of the error (given by vim.diagnostic.severity enum)
+-- @returns The color of the next severity, next defined as the severity more severe than the one passed (i.e error or warning if passed info, etc)
+--          if there are no active diagnostics of higher severity, it returns the statusline background color
 local function getNextActiveSeverityColor(severity)
     -- Map of severities to colors
     local diagnosticColorsMap = {}
