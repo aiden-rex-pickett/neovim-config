@@ -144,10 +144,17 @@ function FelineConfig()
                 }
             },
             hl = {
-                fg = util.darken("#F2F0EF", 0.8),
+                fg = STATUS_LINE_TEXT,
                 bg = colors.dark3
             },
-            left_sep = 'block'
+            left_sep = 'block',
+            right_sep = {
+                str = " ",
+                hl = {
+                    fg = TERMINAL_BACKGROUND,
+                    bg = colors.dark3,
+                },
+            }
         },
         diagnostic_errors = generateDiagnosticComponentTable(vim.diagnostic.severity.ERROR, colors.error, ""),
         diagnostic_warnings = generateDiagnosticComponentTable(vim.diagnostic.severity.WARN, colors.warning, ""),
@@ -212,6 +219,21 @@ function FelineConfig()
                 }
             }
         },
+        file_encoding = {
+            provider = 'file_encoding',
+            hl = {
+                fg = STATUS_LINE_TEXT,
+                bg = colors.dark3,
+            },
+            left_sep = 'block',
+            right_sep = {
+                str = '█',
+                hl = {
+                    fg = STATUS_LINE_BACKGROUND,
+                    bg = util.darken(TERMINAL_BACKGROUND, 0.6)
+                }
+            }
+        }
     }
 
     -- Layout of components for the active buffer
@@ -219,8 +241,9 @@ function FelineConfig()
         -- left
         {
             c.vi_mode,
-            c.file_path,
             -- TODO Git Things
+            c.file_path,
+            c.file_encoding,
         },
         -- middle
         {
