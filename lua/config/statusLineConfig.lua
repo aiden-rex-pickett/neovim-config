@@ -7,7 +7,10 @@
 local colors = require("tokyonight.colors").setup({ style = "night" })
 local util = require("tokyonight.util")
 
-StatusLineBackgroundColor = colors.dark3
+STATUS_LINE_BACKGROUND = colors.dark3
+TERMINAL_BACKGROUND = "#222436"
+STATUS_LINE_BACKGROUND_DARK = util.darken(TERMINAL_BACKGROUND, 0.6)
+STATUS_LINE_TEXT = util.darken("#F2F0EF", 0.8)
 
 --- Darkens a color, for use by the background of the diagnostics
 --- @param color string The string representing the color to darken
@@ -36,7 +39,7 @@ local function getNextActiveSeverityColor(severity)
     end
 
     -- If not, return the default background color for the status line
-    return StatusLineBackgroundColor
+    return STATUS_LINE_BACKGROUND_DARK
 end
 
 --- Generates a component table for the given diagnostic
@@ -161,9 +164,53 @@ function FelineConfig()
             },
             hl = {
                 fg = colors.comment,
-                bg = "#222436", -- Background color
+                bg = TERMINAL_BACKGROUND, -- Background color
             },
             left_sep = "block",
+        },
+        line_percentage = {
+            provider = 'line_percentage',
+            hl = {
+                fg = colors.black,
+                bg = vi_mode_colors.NORMAL,
+                style = "bold",
+            },
+            left_sep = {
+                str = "█",
+                hl = {
+                    fg = vi_mode_colors.NORMAL,
+                    bg = vi_mode_colors.INSERT,
+                }
+            },
+            right_sep = {
+                str = "block",
+                hl = {
+                    fg = vi_mode_colors.NORMAL,
+                }
+            }
+        },
+        line_and_col = {
+            provider = 'position',
+            hl = {
+                fg = colors.black,
+                bg = vi_mode_colors.INSERT,
+                style = "bold",
+            },
+            left_sep = {
+                str = "█",
+                hl = function ()
+                    return {
+                    fg = vi_mode_colors.INSERT,
+                    bg = getNextActiveSeverityColor(5)
+                    }
+                end,
+            },
+            right_sep = {
+                str = "block",
+                hl = {
+                    fg = vi_mode_colors.INSERT,
+                }
+            }
         },
     }
 
@@ -185,6 +232,8 @@ function FelineConfig()
             c.diagnostic_warnings,
             c.diagnostic_info,
             c.diagnostic_hints,
+            c.line_and_col,
+            c.line_percentage,
         }
     }
 
@@ -192,7 +241,7 @@ function FelineConfig()
     local inactive = {
         -- left
         {
-            c.file_name
+            c.bland_file_name
         },
         -- middle
         {
