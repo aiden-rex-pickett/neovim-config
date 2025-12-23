@@ -149,10 +149,10 @@ function FelineConfig()
             },
             left_sep = 'block',
             right_sep = {
-                str = ' ',
+                str = '█',
                 hl = {
-                    fg = TERMINAL_BACKGROUND,
-                    bg = colors.dark3,
+                    fg = STATUS_LINE_BACKGROUND,
+                    bg = STATUS_LINE_BACKGROUND_DARK,
                 },
             }
         },
@@ -204,13 +204,11 @@ function FelineConfig()
                 style = 'bold',
             },
             left_sep = {
-                str = '█',
-                hl = function()
-                    return {
-                        fg = vi_mode_colors.INSERT,
-                        bg = getNextActiveSeverityColor(5)
-                    }
-                end,
+                str = ' █',
+                hl = {
+                    fg = vi_mode_colors.INSERT,
+                    bg = STATUS_LINE_BACKGROUND,
+                },
             },
             right_sep = {
                 str = 'block',
@@ -225,15 +223,16 @@ function FelineConfig()
                 fg = STATUS_LINE_TEXT,
                 bg = colors.dark3,
             },
-            left_sep = 'block',
-            right_sep = {
-                str = '█',
-                hl = {
-                    fg = STATUS_LINE_BACKGROUND,
-                    bg = STATUS_LINE_BACKGROUND_DARK
-                }
-            }
-        }
+            left_sep = {
+                str = '█',
+                hl = function()
+                    return {
+                        fg = STATUS_LINE_BACKGROUND,
+                        bg = getNextActiveSeverityColor(5),
+                    }
+                end,
+            },
+        },
     }
 
     -- Layout of components for the active buffer
@@ -241,13 +240,11 @@ function FelineConfig()
         -- left
         {
             c.vi_mode,
-            -- TODO Git Things
             c.file_path,
-            c.file_encoding,
+            { hl = { bg = STATUS_LINE_BACKGROUND_DARK } }
         },
         -- middle
         {
-            -- TODO search count
         },
         -- right
         {
@@ -255,6 +252,7 @@ function FelineConfig()
             c.diagnostic_warnings,
             c.diagnostic_info,
             c.diagnostic_hints,
+            c.file_encoding,
             c.line_and_col,
             c.line_percentage,
         }
@@ -283,8 +281,8 @@ function FelineConfig()
 end
 
 -- Allows diagnostic components to be redrawn correctly as the diagnostic information changes
-vim.api.nvim_create_autocmd("DiagnosticChanged", {
-    command = "redrawstatus"
+vim.api.nvim_create_autocmd('DiagnosticChanged', {
+    command = 'redrawstatus'
 })
 
 -- Return this table so that the plugin file can require this one and use this function as the config
