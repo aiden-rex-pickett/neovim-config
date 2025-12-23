@@ -22,6 +22,10 @@ MapNorm("<leader>w-", function() vim.cmd("vertical resize -4") end, "move vertic
 MapNorm("<leader>w+", function() vim.cmd("resize +4") end, "move horizontal dividing line to down")
 MapNorm("<leader>w_", function() vim.cmd("resize -4") end, "move horizontal dividing line to up")
 
+-- Convience overrides --
+MapNorm("<C-d>", function() vim.cmd("normal " .. vim.wo.scroll .. "j"); vim.cmd("normal zz") end, "center cursor as you move half page down")
+MapNorm("<C-u>", function() vim.cmd("normal " .. vim.wo.scroll .. "k"); vim.cmd("normal zz") end, "center cursor as you move half page up")
+
 -- LSP keymaps --
 -- This is the default keymaps that all servers use --
 function DefaultKeymaps(bufnr)
