@@ -230,7 +230,7 @@ function FelineConfig()
                 str = '█',
                 hl = {
                     fg = STATUS_LINE_BACKGROUND,
-                    bg = util.darken(TERMINAL_BACKGROUND, 0.6)
+                    bg = STATUS_LINE_BACKGROUND_DARK
                 }
             }
         }
@@ -281,6 +281,11 @@ function FelineConfig()
         vi_mode_colors = vi_mode_colors,
     })
 end
+
+-- Allows diagnostic components to be redrawn correctly as the diagnostic information changes
+vim.api.nvim_create_autocmd("DiagnosticChanged", {
+    command = "redrawstatus"
+})
 
 -- Return this table so that the plugin file can require this one and use this function as the config
 return { FelineConfig = FelineConfig }
