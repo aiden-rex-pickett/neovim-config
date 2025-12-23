@@ -4,10 +4,13 @@
 --- @alias vim.diagnostic.severity integer
 
 ---@diagnostic disable-next-line: missing-fields
-local colors = require("tokyonight.colors").setup({ style = "night" })
-local util = require("tokyonight.util")
+local colors = require('tokyonight.colors').setup({ style = 'night' })
+local util = require('tokyonight.util')
 
-StatusLineBackgroundColor = colors.dark3
+STATUS_LINE_BACKGROUND = colors.dark3
+TERMINAL_BACKGROUND = '#222436'
+STATUS_LINE_BACKGROUND_DARK = util.darken(TERMINAL_BACKGROUND, 0.6)
+STATUS_LINE_TEXT = util.darken('#F2F0EF', 0.8)
 
 --- Darkens a color, for use by the background of the diagnostics
 --- @param color string The string representing the color to darken
@@ -36,7 +39,7 @@ local function getNextActiveSeverityColor(severity)
     end
 
     -- If not, return the default background color for the status line
-    return StatusLineBackgroundColor
+    return STATUS_LINE_BACKGROUND_DARK
 end
 
 --- Generates a component table for the given diagnostic
@@ -51,22 +54,22 @@ local function generateDiagnosticComponentTable(severity, color, icon)
         provider = function()
             local errors = vim.diagnostic.count(0)[severity];
             if errors ~= nil then
-                return tostring(errors) .. " "
+                return tostring(errors) .. ' '
             else
-                return ""
+                return ''
             end
         end,
         hl = function()
             return {
                 fg = color,
                 bg = darkend(color),
-                style = "bold",
+                style = 'bold',
             }
         end,
         left_sep = function()
             return
             {
-                str = "left_rounded",
+                str = 'left_rounded',
                 hl = {
                     fg = darkend(color),
                     bg = getNextActiveSeverityColor(severity) -- Used so seperator colors are correct
@@ -74,7 +77,7 @@ local function generateDiagnosticComponentTable(severity, color, icon)
             }
         end,
         icon = {
-            str = icon .. " ",
+            str = icon .. ' ',
             hl = {
                 fg = color,
             },
@@ -84,7 +87,7 @@ end
 
 --- Config function to be passed as the config function for the plugin (see lua/plugins/statusLine.lua)
 function FelineConfig()
-    local feline = require("feline")
+    local feline = require('feline')
 
     local vi_mode_colors = {
         NORMAL = util.lighten(colors.blue2, 0.7),
@@ -102,23 +105,23 @@ function FelineConfig()
     local c = {
         vi_mode = {
             provider = {
-                name = "vi_mode",
+                name = 'vi_mode',
                 opts = { show_mode_name = true },
             },
             hl = function()
                 return {
-                    fg = util.darken(colors.dark3, 0.12), -- "#222436",
-                    bg = require("feline.providers.vi_mode").get_mode_color(),
-                    style = "bold",
-                    name = "NeovimModeHLColor",
+                    fg = util.darken(colors.dark3, 0.12), -- '#222436',
+                    bg = require('feline.providers.vi_mode').get_mode_color(),
+                    style = 'bold',
+                    name = 'NeovimModeHLColor',
                 }
             end,
-            left_sep = "block",
+            left_sep = 'block',
             right_sep = function()
                 return {
-                    str = "█",
+                    str = '█',
                     hl = {
-                        fg = require("feline.providers.vi_mode").get_mode_color(),
+                        fg = require('feline.providers.vi_mode').get_mode_color(),
                         bg = colors.dark3
                     }
                 }
@@ -141,15 +144,22 @@ function FelineConfig()
                 }
             },
             hl = {
-                fg = util.darken("#F2F0EF", 0.8),
+                fg = STATUS_LINE_TEXT,
                 bg = colors.dark3
             },
-            left_sep = 'block'
+            left_sep = 'block',
+            right_sep = {
+                str = '█',
+                hl = {
+                    fg = STATUS_LINE_BACKGROUND,
+                    bg = STATUS_LINE_BACKGROUND_DARK,
+                },
+            }
         },
-        diagnostic_errors = generateDiagnosticComponentTable(vim.diagnostic.severity.ERROR, colors.error, ""),
-        diagnostic_warnings = generateDiagnosticComponentTable(vim.diagnostic.severity.WARN, colors.warning, ""),
-        diagnostic_hints = generateDiagnosticComponentTable(vim.diagnostic.severity.HINT, colors.hint, ""),
-        diagnostic_info = generateDiagnosticComponentTable(vim.diagnostic.severity.INFO, colors.info, "󰋽"),
+        diagnostic_errors = generateDiagnosticComponentTable(vim.diagnostic.severity.ERROR, colors.error, ''),
+        diagnostic_warnings = generateDiagnosticComponentTable(vim.diagnostic.severity.WARN, colors.warning, ''),
+        diagnostic_hints = generateDiagnosticComponentTable(vim.diagnostic.severity.HINT, colors.hint, ''),
+        diagnostic_info = generateDiagnosticComponentTable(vim.diagnostic.severity.INFO, colors.info, '󰋽'),
         -- The filename for nonactive buffers
         bland_file_name = {
             provider = {
@@ -161,9 +171,67 @@ function FelineConfig()
             },
             hl = {
                 fg = colors.comment,
-                bg = "#222436", -- Background color
+                bg = TERMINAL_BACKGROUND, -- Background color
             },
-            left_sep = "block",
+            left_sep = 'block',
+        },
+        line_percentage = {
+            provider = 'line_percentage',
+            hl = {
+                fg = colors.black,
+                bg = vi_mode_colors.NORMAL,
+                style = 'bold',
+            },
+            left_sep = {
+                str = '█',
+                hl = {
+                    fg = vi_mode_colors.NORMAL,
+                    bg = vi_mode_colors.INSERT,
+                }
+            },
+            right_sep = {
+                str = 'block',
+                hl = {
+                    fg = vi_mode_colors.NORMAL,
+                }
+            }
+        },
+        line_and_col = {
+            provider = 'position',
+            hl = {
+                fg = colors.black,
+                bg = vi_mode_colors.INSERT,
+                style = 'bold',
+            },
+            left_sep = {
+                str = ' █',
+                hl = {
+                    fg = vi_mode_colors.INSERT,
+                    bg = STATUS_LINE_BACKGROUND,
+                },
+            },
+            right_sep = {
+                str = 'block',
+                hl = {
+                    fg = vi_mode_colors.INSERT,
+                }
+            }
+        },
+        file_encoding = {
+            provider = 'file_encoding',
+            hl = {
+                fg = STATUS_LINE_TEXT,
+                bg = colors.dark3,
+            },
+            left_sep = {
+                str = '█',
+                hl = function()
+                    return {
+                        fg = STATUS_LINE_BACKGROUND,
+                        bg = getNextActiveSeverityColor(5),
+                    }
+                end,
+            },
         },
     }
 
@@ -173,11 +241,10 @@ function FelineConfig()
         {
             c.vi_mode,
             c.file_path,
-            -- TODO Git Things
+            { hl = { bg = STATUS_LINE_BACKGROUND_DARK } }
         },
         -- middle
         {
-            -- TODO search count
         },
         -- right
         {
@@ -185,6 +252,9 @@ function FelineConfig()
             c.diagnostic_warnings,
             c.diagnostic_info,
             c.diagnostic_hints,
+            c.file_encoding,
+            c.line_and_col,
+            c.line_percentage,
         }
     }
 
@@ -192,7 +262,7 @@ function FelineConfig()
     local inactive = {
         -- left
         {
-            c.file_name
+            c.bland_file_name
         },
         -- middle
         {
@@ -209,6 +279,11 @@ function FelineConfig()
         vi_mode_colors = vi_mode_colors,
     })
 end
+
+-- Allows diagnostic components to be redrawn correctly as the diagnostic information changes
+vim.api.nvim_create_autocmd('DiagnosticChanged', {
+    command = 'redrawstatus'
+})
 
 -- Return this table so that the plugin file can require this one and use this function as the config
 return { FelineConfig = FelineConfig }
