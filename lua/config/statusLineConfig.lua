@@ -233,6 +233,19 @@ function FelineConfig()
                 end,
             },
         },
+        git_branch = {
+            provider = function ()
+                local current_branch = vim.b.gitsigns_head
+                if current_branch then
+                    return '  ' .. current_branch
+                end
+                return ''
+            end,
+            hl = {
+                fg = STATUS_LINE_TEXT,
+                bg = STATUS_LINE_BACKGROUND_DARK,
+            },
+        }
     }
 
     -- Layout of components for the active buffer
@@ -241,6 +254,7 @@ function FelineConfig()
         {
             c.vi_mode,
             c.file_path,
+            c.git_branch,
             { hl = { bg = STATUS_LINE_BACKGROUND_DARK } }
         },
         -- middle
