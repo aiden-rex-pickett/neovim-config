@@ -23,20 +23,20 @@ RequireWithErrorCheck("config.lazy")
 RequireWithErrorCheck("core.keymaps")
 
 -- Line number and tab settings --
-RequireWithErrorCheck("core.linesAndTabs")
+RequireWithErrorCheck("core.lines_and_tabs")
 
 -- Custom commands --
-RequireWithErrorCheck("core.customCommands")
+RequireWithErrorCheck("core.custom_commands")
 
 -- Set Colorscheme --
-RequireWithErrorCheck("config.colorschemeConfig")
+RequireWithErrorCheck("config.colorscheme_config")
 vim.cmd("colorscheme " .. DEFAULT_COLORSCHEME)
 
 -- Autocomplete --
-RequireWithErrorCheck("config.nvimCmpConfig")
+RequireWithErrorCheck("config.nvim_cmp_config")
 
 -- Lsp Configuration --
-RequireWithErrorCheck("config.lspConfig")
+RequireWithErrorCheck("config.lsp_config")
 
 function PrintErrorMessages()
     print([[
