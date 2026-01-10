@@ -14,6 +14,10 @@ MapNorm("<leader>wj", "<C-w>j", "move down by a window")
 MapNorm("<leader>wk", "<C-w>k", "move up by a window")
 MapNorm("<leader>wl", "<C-w>l", "move right by a window")
 
+local telescope_builtin = require('telescope.builtin')
+-- Telescope bindings --
+MapNorm("<leader>ff", telescope_builtin.find_files, "Find files in telescope")
+
 -- Splitting keymaps --
 MapNorm("<leader>ws", vim.cmd.split, "create a split window")
 MapNorm("<leader>wv", vim.cmd.vsplit, "create a vertical split window")
