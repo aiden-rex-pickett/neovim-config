@@ -1,6 +1,10 @@
+local colors = require('tokyonight.colors.night')
+
 -- Line Number Things --
 vim.o.number = true
 vim.o.relativenumber = true
+vim.o.cursorline = true
+vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = colors.orange })
 
 -- Indent Things --
 vim.opt.tabstop = 4
@@ -18,9 +22,9 @@ vim.opt.foldlevelstart = 99
 -- Search Things --
 vim.api.nvim_create_autocmd("InsertEnter", {
     callback = function()
-        vim.schedule(function () vim.cmd("noh") end)
+        vim.schedule(function() vim.cmd("noh") end)
     end,
-    desc = [[Clears search highlighting from '/' or '?' 
+    desc = [[Clears search highlighting from '/' or '?'
             when entering insert mode. The search can still be
             traversed with 'n' and 'N' regardless]]
 })

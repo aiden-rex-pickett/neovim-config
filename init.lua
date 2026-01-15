@@ -19,6 +19,11 @@ end
 -- Plugin manger things --
 RequireWithErrorCheck("config.lazy")
 
+-- Neovide (if present) --
+if vim.g.neovide then
+    RequireWithErrorCheck("config.neovide_config")
+end
+
 -- Keymaps --
 RequireWithErrorCheck("core.keymaps")
 
