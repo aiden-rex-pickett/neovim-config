@@ -16,6 +16,16 @@ end
 
 vim.api.nvim_create_autocmd('CmdlineEnter', { callback = changeToRootDirectory })
 
+vim.api.nvim_create_autocmd('VimEnter', {
+    callback = function()
+        if vim.fn.argc() == 0 then
+            vim.schedule(function()
+                vim.cmd("AutoSession search")
+            end)
+        end
+    end
+})
+
 -- Remap 'Config' to go to config
 vim.api.nvim_create_user_command(
     'Config',
