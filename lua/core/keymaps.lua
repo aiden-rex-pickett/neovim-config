@@ -15,8 +15,13 @@ MapNorm("<leader>wk", "<C-w>k", "move up by a window")
 MapNorm("<leader>wl", "<C-w>l", "move right by a window")
 
 local telescope_builtin = require('telescope.builtin')
+local saveWithCheck = require('core.custom_commands').saveWithCheckFunction
 -- Telescope bindings --
 MapNorm("<leader>ff", telescope_builtin.find_files, "Find files in telescope")
+MapNorm("<leader>fs", function()
+    saveWithCheck({ file = vim.fn.expand("%:p") })
+    vim.cmd("AutoSession search")
+end, "Search sessions with telescope") -- Not exactly telescope related but makes sense here
 
 -- Splitting keymaps --
 MapNorm("<leader>ws", vim.cmd.split, "create a split window")
@@ -27,8 +32,12 @@ MapNorm("<leader>w+", function() vim.cmd("resize +4") end, "move horizontal divi
 MapNorm("<leader>w_", function() vim.cmd("resize -4") end, "move horizontal dividing line to up")
 
 -- Convience overrides --
-MapNorm("<C-d>", function() vim.cmd("normal " .. vim.wo.scroll .. "j"); vim.cmd("normal zz") end, "center cursor as you move half page down")
-MapNorm("<C-u>", function() vim.cmd("normal " .. vim.wo.scroll .. "k"); vim.cmd("normal zz") end, "center cursor as you move half page up")
+MapNorm("<C-d>", function()
+    vim.cmd("normal " .. vim.wo.scroll .. "j"); vim.cmd("normal zz")
+end, "center cursor as you move half page down")
+MapNorm("<C-u>", function()
+    vim.cmd("normal " .. vim.wo.scroll .. "k"); vim.cmd("normal zz")
+end, "center cursor as you move half page up")
 
 -- LSP keymaps --
 -- This is the default keymaps that all servers use --
