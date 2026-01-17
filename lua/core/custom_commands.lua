@@ -14,8 +14,10 @@ local function changeToRootDirectory()
     end
 end
 
+-- Changes to root whenever you go to type a command
 vim.api.nvim_create_autocmd('CmdlineEnter', { callback = changeToRootDirectory })
 
+-- Open up picker for sessions on launch with no file argument
 vim.api.nvim_create_autocmd('VimEnter', {
     callback = function()
         if vim.fn.argc() == 0 then
@@ -24,6 +26,20 @@ vim.api.nvim_create_autocmd('VimEnter', {
             end)
         end
     end
+})
+
+--- @param args vim.api.keyset.create_autocmd.callback_args
+local function saveSessionIfInCorrectCwd(args)
+    local session_cwd = string.gsub(require('auto-session.lib').current_session_name(), '\\', '/')
+    local current_cwd = string.gsub(args.file, '\\', '/')
+    if session_cwd == string.sub(current_cwd, 1, #session_cwd) then
+        require('auto-session').save_session()
+    end
+end
+
+-- Save session only if you are still in a sensible directory based on the session name
+vim.api.nvim_create_autocmd('BufLeave', {
+    callback = saveSessionIfInCorrectCwd,
 })
 
 -- Remap 'Config' to go to config
