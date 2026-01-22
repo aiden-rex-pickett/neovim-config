@@ -57,4 +57,4 @@ vim.api.nvim_create_user_command(
     {}
 )
 
-return { changeToRootFunction = changeToRootDirectory } -- returned for use in plugins
+return { changeToRootFunction = changeToRootDirectory, saveWithCheckFunction = saveSessionIfInCorrectCwd } -- returned for use in plugins
