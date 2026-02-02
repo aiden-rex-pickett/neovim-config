@@ -19,7 +19,7 @@ local saveWithCheck = require('core.custom_commands').saveWithCheckFunction
 -- Telescope bindings --
 MapNorm("<leader>ff", telescope_builtin.find_files, "Find files in telescope")
 MapNorm("<leader>fs", function()
-    saveWithCheck({ file = vim.fn.expand("%:p") })
+        saveWithCheck({ file = vim.fn.expand("%:p") })
     vim.cmd("AutoSession search")
 end, "Search sessions with telescope") -- Not exactly telescope related but makes sense here
 
@@ -45,7 +45,7 @@ function DefaultKeymaps(bufnr)
     local options = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, options)
     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, options)
-    vim.keymap.set("n", "gr", vim.lsp.buf.references, options)
+    vim.keymap.set("n", "gr", telescope_builtin.lsp_references, options)
     vim.keymap.set("n", "K", vim.lsp.buf.hover, options)
     vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, options)
     vim.keymap.set("n", "<leader>a", vim.lsp.buf.code_action, options)
