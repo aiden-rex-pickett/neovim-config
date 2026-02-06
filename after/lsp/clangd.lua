@@ -4,7 +4,6 @@ return {
     end,
     cmd = {
         'clangd',
-        '--query-driver=C:\\MinGW\\bin\\gcc.exe',
         '--clang-tidy',
         '--fallback-style=llvm',
     }

@@ -9,7 +9,6 @@ local function telescopeConfigure()
             }
         }
     }
-    print("HELEKJLEKJE")
     telescope.load_extension("ui-select")
 end
 
