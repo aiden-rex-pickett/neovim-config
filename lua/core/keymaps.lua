@@ -14,6 +14,23 @@ MapNorm("<leader>wj", "<C-w>j", "move down by a window")
 MapNorm("<leader>wk", "<C-w>k", "move up by a window")
 MapNorm("<leader>wl", "<C-w>l", "move right by a window")
 
+-- Telescope bindings --
+local telescope_builtin = require('telescope.builtin')
+local saveWithCheck = require('core.custom_commands').saveWithCheckFunction
+MapNorm("<leader>ff", telescope_builtin.find_files, "Find files in telescope")
+MapNorm("<leader>fs", telescope_builtin.grep_string, "Find the string under the cursor")
+MapNorm("<leader>fl", telescope_builtin.live_grep, "Live interactive grep")
+MapNorm("<leader>fb", telescope_builtin.current_buffer_fuzzy_find, "Grep current buffer")
+
+-- AutoSession bindings --
+MapNorm("<leader>ss", function()
+        saveWithCheck({ file = vim.fn.expand("%:p") })
+    vim.cmd("AutoSession search")
+end, "Search sessions with telescope")
+MapNorm("<leader>sd", function()
+    vim.cmd("AutoSession deletePicker")
+end, "Search sessions with telescope")
+
 -- Splitting keymaps --
 MapNorm("<leader>ws", vim.cmd.split, "create a split window")
 MapNorm("<leader>wv", vim.cmd.vsplit, "create a vertical split window")
@@ -23,8 +40,12 @@ MapNorm("<leader>w+", function() vim.cmd("resize +4") end, "move horizontal divi
 MapNorm("<leader>w_", function() vim.cmd("resize -4") end, "move horizontal dividing line to up")
 
 -- Convience overrides --
-MapNorm("<C-d>", function() vim.cmd("normal " .. vim.wo.scroll .. "j"); vim.cmd("normal zz") end, "center cursor as you move half page down")
-MapNorm("<C-u>", function() vim.cmd("normal " .. vim.wo.scroll .. "k"); vim.cmd("normal zz") end, "center cursor as you move half page up")
+MapNorm("<C-d>", function()
+    vim.cmd("normal " .. vim.wo.scroll .. "j"); vim.cmd("normal zz")
+end, "center cursor as you move half page down")
+MapNorm("<C-u>", function()
+    vim.cmd("normal " .. vim.wo.scroll .. "k"); vim.cmd("normal zz")
+end, "center cursor as you move half page up")
 
 -- LSP keymaps --
 -- This is the default keymaps that all servers use --
@@ -32,7 +53,7 @@ function DefaultKeymaps(bufnr)
     local options = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, options)
     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, options)
-    vim.keymap.set("n", "gr", vim.lsp.buf.references, options)
+    vim.keymap.set("n", "gr", telescope_builtin.lsp_references, options)
     vim.keymap.set("n", "K", vim.lsp.buf.hover, options)
     vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, options)
     vim.keymap.set("n", "<leader>a", vim.lsp.buf.code_action, options)
