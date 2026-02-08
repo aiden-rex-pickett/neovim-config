@@ -14,14 +14,22 @@ MapNorm("<leader>wj", "<C-w>j", "move down by a window")
 MapNorm("<leader>wk", "<C-w>k", "move up by a window")
 MapNorm("<leader>wl", "<C-w>l", "move right by a window")
 
+-- Telescope bindings --
 local telescope_builtin = require('telescope.builtin')
 local saveWithCheck = require('core.custom_commands').saveWithCheckFunction
--- Telescope bindings --
 MapNorm("<leader>ff", telescope_builtin.find_files, "Find files in telescope")
-MapNorm("<leader>fs", function()
+MapNorm("<leader>fs", telescope_builtin.grep_string, "Find the string under the cursor")
+MapNorm("<leader>fl", telescope_builtin.live_grep, "Live interactive grep")
+MapNorm("<leader>fb", telescope_builtin.current_buffer_fuzzy_find, "Grep current buffer")
+
+-- AutoSession bindings --
+MapNorm("<leader>ss", function()
         saveWithCheck({ file = vim.fn.expand("%:p") })
     vim.cmd("AutoSession search")
-end, "Search sessions with telescope") -- Not exactly telescope related but makes sense here
+end, "Search sessions with telescope")
+MapNorm("<leader>sd", function()
+    vim.cmd("AutoSession deletePicker")
+end, "Search sessions with telescope")
 
 -- Splitting keymaps --
 MapNorm("<leader>ws", vim.cmd.split, "create a split window")
