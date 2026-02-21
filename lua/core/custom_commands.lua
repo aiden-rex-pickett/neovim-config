@@ -38,7 +38,7 @@ local function saveSessionIfInCorrectCwd(args)
     local current_cwd = string.gsub(args.file, '\\', '/')
     if vim.bo.filetype == "netrw" or vim.bo.buftype == "terminal" or args.file == "" then return end
     if session_cwd == string.sub(current_cwd, 1, #session_cwd) then
-        require('auto-session').save_session()
+        require('auto-session').save_session(nil, { show_message = false })
     end
 end
 
