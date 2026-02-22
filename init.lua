@@ -6,7 +6,20 @@ vim.cmd("set termguicolors")
 vim.cmd("set noshowmode")
 
 -- Shell things --
-vim.opt.shell = "cmd.exe"
+vim.opt.shell = "powershell"
+-- Shell command flags
+vim.o.shellcmdflag =
+'-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues[\'Out-File:Encoding\']=\'utf8\';'
+
+-- Shell redirection
+vim.o.shellredir = '2>&1 | %{ "$_" } | Out-File %s; exit $LastExitCode'
+
+-- Shell pipe
+vim.o.shellpipe = '2>&1 | %{ "$_" } | Tee-Object %s; exit $LastExitCode'
+
+-- Shell quote options
+vim.o.shellquote = ''
+vim.o.shellxquote = ''
 
 local errorMap = {}
 function RequireWithErrorCheck(path)
