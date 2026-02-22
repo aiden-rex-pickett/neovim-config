@@ -18,13 +18,14 @@ MapNorm("<leader>wl", "<C-w>l", "move right by a window")
 local telescope_builtin = require('telescope.builtin')
 local saveWithCheck = require('core.custom_commands').saveWithCheckFunction
 MapNorm("<leader>ff", telescope_builtin.find_files, "Find files in telescope")
-MapNorm("<leader>fs", telescope_builtin.grep_string, "Find the string under the cursor")
+MapNorm("<leader>fs", function() telescope_builtin.grep_string({ search = "" }) end, "Type a string to find")
+MapNorm("<leader>fw", telescope_builtin.grep_string, "Find the string under the cursor")
 MapNorm("<leader>fl", telescope_builtin.live_grep, "Live interactive grep")
 MapNorm("<leader>fb", telescope_builtin.current_buffer_fuzzy_find, "Grep current buffer")
 
 -- AutoSession bindings --
 MapNorm("<leader>ss", function()
-        saveWithCheck({ file = vim.fn.expand("%:p") })
+    saveWithCheck({ file = vim.fn.expand("%:p") })
     vim.cmd("AutoSession search")
 end, "Search sessions with telescope")
 MapNorm("<leader>sd", function()

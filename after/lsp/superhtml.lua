@@ -1,5 +1,5 @@
 return {
-    on_attach = function (client, bufner)
+    on_attach = function(client, bufner)
         require("core.keymaps").attachFunction(bufner)
     end,
     cmd = { 'superhtml', 'lsp' },
