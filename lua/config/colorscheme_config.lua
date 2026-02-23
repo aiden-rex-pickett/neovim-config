@@ -18,11 +18,12 @@ require("tokyonight").setup(
 local colors = require("tokyonight.colors").setup({ style = "night" })
 local util = require("tokyonight.util")
 
-local functionColor = { fg = util.lighten(colors.blue2, 0.9), bold = true }
-local parametersColor = { fg = util.lighten(colors.red1, 0.85), italic = true }
+-- Testing custom captures for lua --
 
 -- Custom capture group for only the name of functions in function definitions --
+local functionColor = { fg = util.lighten(colors.blue2, 0.9), bold = true }
 vim.api.nvim_set_hl(0, "@function.definition.name", functionColor)
 
 -- Custom capture group for only the name of parameters in the function --
+local parametersColor = { fg = util.lighten(colors.red1, 0.85), italic = true }
 vim.api.nvim_set_hl(0, "@function.definition.parameters.name", parametersColor)
