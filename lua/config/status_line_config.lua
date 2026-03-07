@@ -15,8 +15,23 @@ STATUS_LINE_TEXT = util.darken('#F2F0EF', 0.8)
 --- Darkens a color, for use by the background of the diagnostics
 --- @param color string The string representing the color to darken
 --- @return string darkendColor the darkened version of the passed color
-local function darkend(color)
+local function darkened(color)
     return util.darken(color, 0.3)
+end
+
+--- Gets next active severity value
+--- @param severity vim.diagnostic.severity The severity to base the search on
+--- @return vim.diagnostic.severity nextSeverity the next active severity value
+local function getNextActiveSeverity(severity)
+    -- If the count of the diagnostic one less than this one (1 = ERROR, 4 = HINT) is present on the current buffer, return that color darkened
+    while severity > 0 do
+        if vim.diagnostic.count(0)[severity - 1] ~= nil then
+            return severity - 1
+        end
+        severity = severity - 1
+    end
+
+    return -1 -- For no next severity
 end
 
 --- Gets the next active severity color, so that the highlight can be correct across the seperators between diagnostic components
@@ -30,12 +45,9 @@ local function getNextActiveSeverityColor(severity)
     diagnosticColorsMap[vim.diagnostic.severity.HINT] = colors.hint
     diagnosticColorsMap[vim.diagnostic.severity.INFO] = colors.info
 
-    -- If the count of the diagnostic one less than this one (1 = ERROR, 4 = HINT) is present on the current buffer, return that color darkened
-    while severity > 0 do
-        if vim.diagnostic.count(0)[severity - 1] ~= nil then
-            return darkend(diagnosticColorsMap[severity - 1])
-        end
-        severity = severity - 1
+    local nextSeverity = getNextActiveSeverity(severity)
+    if nextSeverity ~= -1 then
+        return darkened(diagnosticColorsMap[nextSeverity])
     end
 
     -- If not, return the default background color for the status line
@@ -63,7 +75,7 @@ local function generateDiagnosticComponentTable(severity, color, icon)
         hl = function()
             return {
                 fg = color,
-                bg = darkend(color),
+                bg = darkened(color),
                 style = 'bold',
             }
         end,
@@ -72,7 +84,7 @@ local function generateDiagnosticComponentTable(severity, color, icon)
             {
                 str = 'left_rounded',
                 hl = {
-                    fg = darkend(color),
+                    fg = darkened(color),
                     bg = getNextActiveSeverityColor(severity) -- Used so seperator colors are correct
                 },
             }
@@ -236,12 +248,12 @@ function FelineConfig()
                 bg = colors.dark3,
             },
             left_sep = {
-                str = ' █',
+                str = '█',
                 always_visible = false,
                 hl = function()
                     return {
                         fg = STATUS_LINE_BACKGROUND,
-                        bg = getNextActiveSeverityColor(5),
+                        bg = getNextActiveSeverityColor(5), -- 5 used so that it scans for all
                     }
                 end,
             },
