@@ -44,6 +44,7 @@ local function getNextActiveSeverityColor(severity)
     diagnosticColorsMap[vim.diagnostic.severity.WARN] = colors.warning
     diagnosticColorsMap[vim.diagnostic.severity.HINT] = colors.hint
     diagnosticColorsMap[vim.diagnostic.severity.INFO] = colors.info
+    diagnosticColorsMap[-1] = STATUS_LINE_BACKGROUND_DARK
 
     local nextSeverity = getNextActiveSeverity(severity)
     if nextSeverity ~= -1 then
@@ -51,7 +52,7 @@ local function getNextActiveSeverityColor(severity)
     end
 
     -- If not, return the default background color for the status line
-    return STATUS_LINE_BACKGROUND_DARK
+    return diagnosticColorsMap[-1]
 end
 
 --- Generates a component table for the given diagnostic
@@ -71,7 +72,6 @@ local function generateDiagnosticComponentTable(severity, color, icon)
                 return ''
             end
         end,
-        truncate_hide = true,
         hl = function()
             return {
                 fg = color,
