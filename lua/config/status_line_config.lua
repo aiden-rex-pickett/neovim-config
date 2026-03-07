@@ -59,6 +59,7 @@ local function generateDiagnosticComponentTable(severity, color, icon)
                 return ''
             end
         end,
+        truncate_hide = true,
         hl = function()
             return {
                 fg = color,
@@ -81,7 +82,8 @@ local function generateDiagnosticComponentTable(severity, color, icon)
             hl = {
                 fg = color,
             },
-        }
+        },
+        name = 'diag' .. severity,
     }
 end
 
@@ -108,6 +110,10 @@ function FelineConfig()
                 name = 'vi_mode',
                 opts = { show_mode_name = true },
             },
+            priority = 2,
+            short_provider = function()
+                return string.sub(require('feline.providers.vi_mode').get_vim_mode(), 1, 1)
+            end,
             hl = function()
                 return {
                     fg = util.darken(colors.dark3, 0.12), -- '#222436',
@@ -136,6 +142,7 @@ function FelineConfig()
                     type = 'relative'
                 }
             },
+            priority = 1,
             short_provider = {
                 name = 'file_info',
                 opts = {
@@ -182,49 +189,55 @@ function FelineConfig()
                 bg = vi_mode_colors.NORMAL,
                 style = 'bold',
             },
-            left_sep = {
-                str = '█',
-                hl = {
-                    fg = vi_mode_colors.NORMAL,
-                    bg = vi_mode_colors.INSERT,
-                }
-            },
             right_sep = {
                 str = 'block',
                 hl = {
                     fg = vi_mode_colors.NORMAL,
                 }
-            }
+            },
+            left_sep = {
+                str = '█',
+                hl = {
+                    fg = vi_mode_colors.NORMAL,
+                    bg = vi_mode_colors.INSERT,
+                }
+            },
         },
         line_and_col = {
             provider = 'position',
+            truncate_hide = true,
+            priority = 4,
             hl = {
                 fg = colors.black,
                 bg = vi_mode_colors.INSERT,
                 style = 'bold',
             },
             left_sep = {
-                str = ' █',
+                str = '█',
                 hl = {
                     fg = vi_mode_colors.INSERT,
                     bg = STATUS_LINE_BACKGROUND,
                 },
             },
             right_sep = {
-                str = 'block',
+                str = ' ',
                 hl = {
-                    fg = vi_mode_colors.INSERT,
+                    fg = vi_mode_colors.NORMAL,
+                    bg = vi_mode_colors.INSERT,
                 }
-            }
+            },
         },
         file_encoding = {
             provider = 'file_encoding',
+            truncate_hide = true,
+            priority = 4,
             hl = {
                 fg = STATUS_LINE_TEXT,
                 bg = colors.dark3,
             },
             left_sep = {
-                str = '█',
+                str = ' █',
+                always_visible = false,
                 hl = function()
                     return {
                         fg = STATUS_LINE_BACKGROUND,
@@ -232,15 +245,24 @@ function FelineConfig()
                     }
                 end,
             },
+            right_sep = {
+                str = ' ',
+                hl = {
+                    fg = vi_mode_colors.INSERT,
+                    bg = STATUS_LINE_BACKGROUND,
+                },
+            },
         },
         git_branch = {
-            provider = function ()
+            provider = function()
                 local current_branch = vim.b.gitsigns_head
                 if current_branch then
-                    return '  ' .. current_branch
+                    return '  ' .. current_branch .. ' '
                 end
                 return ''
             end,
+            truncate_hide = true,
+            priority = 3,
             hl = {
                 fg = STATUS_LINE_TEXT,
                 bg = STATUS_LINE_BACKGROUND_DARK,
