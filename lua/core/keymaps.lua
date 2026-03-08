@@ -23,8 +23,15 @@ MapNorm("<leader>fw", telescope_builtin.grep_string, "Find the string under the 
 MapNorm("<leader>fl", telescope_builtin.live_grep, "Live interactive grep")
 MapNorm("<leader>fb", telescope_builtin.current_buffer_fuzzy_find, "Grep current buffer")
 
+-- Todo Comments bindings --
+local todo_comments = require('todo-comments')
+MapNorm("<leader>nt", todo_comments.jump_next, "Next todo-type comment")
+MapNorm("<leader>Nt", todo_comments.jump_prev, "Next todo-type comment")
+MapNorm("<leader>lt", function () vim.cmd("TodoTelescope") end, "Search all todo-type comments with telescope")
+
 -- AutoSession bindings --
 MapNorm("<leader>ss", function()
+---@diagnostic disable-next-line: missing-fields
     saveWithCheck({ file = vim.fn.expand("%:p") })
     vim.cmd("AutoSession search")
 end, "Search sessions with telescope")
