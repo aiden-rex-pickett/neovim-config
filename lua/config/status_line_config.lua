@@ -188,6 +188,13 @@ function FelineConfig()
                     file_readonly_icon = '󰈡',
                 },
             },
+            short_provider = {
+                name = 'file_info',
+                opts = {
+                    file_modified_icon = '󰝒',
+                    file_readonly_icon = '󰈡',
+                }
+            },
             hl = {
                 fg = colors.comment,
                 bg = TERMINAL_BACKGROUND, -- Background color
@@ -213,6 +220,27 @@ function FelineConfig()
                     fg = vi_mode_colors.NORMAL,
                     bg = vi_mode_colors.INSERT,
                 }
+            },
+        },
+        bland_line_percentage = {
+            provider = 'line_percentage',
+            hl = {
+                fg = colors.comment,
+                bg = TERMINAL_BACKGROUND, -- Background color
+            },
+            right_sep = {
+                str = ' ',
+                hl = {
+                    fg = colors.comment,
+                    bg = TERMINAL_BACKGROUND, -- Background color
+                },
+            },
+            left_sep = {
+                str = ' ',
+                hl = {
+                    fg = colors.comment,
+                    bg = TERMINAL_BACKGROUND, -- Background color
+                },
             },
         },
         line_and_col = {
@@ -265,6 +293,20 @@ function FelineConfig()
                 },
             },
         },
+        bland_file_encoding = {
+            provider = 'file_encoding',
+            hl = {
+                fg = colors.comment,
+                bg = TERMINAL_BACKGROUND, -- Background color
+            },
+            right_sep = {
+                str = ' /',
+                hl = {
+                    fg = colors.comment,
+                    bg = TERMINAL_BACKGROUND, -- Background color
+                },
+            },
+        },
         git_branch = {
             provider = function()
                 local current_branch = vim.b.gitsigns_head
@@ -278,6 +320,28 @@ function FelineConfig()
             hl = {
                 fg = STATUS_LINE_TEXT,
                 bg = STATUS_LINE_BACKGROUND_DARK,
+            },
+        },
+        bland_git_branch = {
+            provider = function()
+                local current_branch = vim.b.gitsigns_head
+                if current_branch then
+                    return '  ' .. current_branch .. ' '
+                end
+                return ''
+            end,
+            truncate_hide = true,
+            priority = 1,
+            hl = {
+                fg = colors.comment,
+                bg = TERMINAL_BACKGROUND, -- Background color
+            },
+            left_sep = {
+                str = ' /',
+                hl = {
+                    fg = colors.comment,
+                    bg = TERMINAL_BACKGROUND, -- Background color
+                },
             },
         }
     }
@@ -310,7 +374,8 @@ function FelineConfig()
     local inactive = {
         -- left
         {
-            c.bland_file_name
+            c.bland_file_name,
+            c.bland_git_branch,
         },
         -- middle
         {
@@ -318,7 +383,8 @@ function FelineConfig()
         },
         -- right
         {
-
+            c.bland_file_encoding,
+            c.bland_line_percentage,
         }
     }
 
