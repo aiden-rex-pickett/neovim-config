@@ -15,8 +15,23 @@ STATUS_LINE_TEXT = util.darken('#F2F0EF', 0.8)
 --- Darkens a color, for use by the background of the diagnostics
 --- @param color string The string representing the color to darken
 --- @return string darkendColor the darkened version of the passed color
-local function darkend(color)
+local function darkened(color)
     return util.darken(color, 0.3)
+end
+
+--- Gets next active severity value
+--- @param severity vim.diagnostic.severity The severity to base the search on
+--- @return vim.diagnostic.severity nextSeverity the next active severity value
+local function getNextActiveSeverity(severity)
+    -- If the count of the diagnostic one less than this one (1 = ERROR, 4 = HINT) is present on the current buffer, return that color darkened
+    while severity > 0 do
+        if vim.diagnostic.count(0)[severity - 1] ~= nil then
+            return severity - 1
+        end
+        severity = severity - 1
+    end
+
+    return -1 -- For no next severity
 end
 
 --- Gets the next active severity color, so that the highlight can be correct across the seperators between diagnostic components
@@ -29,17 +44,15 @@ local function getNextActiveSeverityColor(severity)
     diagnosticColorsMap[vim.diagnostic.severity.WARN] = colors.warning
     diagnosticColorsMap[vim.diagnostic.severity.HINT] = colors.hint
     diagnosticColorsMap[vim.diagnostic.severity.INFO] = colors.info
+    diagnosticColorsMap[-1] = STATUS_LINE_BACKGROUND_DARK
 
-    -- If the count of the diagnostic one less than this one (1 = ERROR, 4 = HINT) is present on the current buffer, return that color darkened
-    while severity > 0 do
-        if vim.diagnostic.count(0)[severity - 1] ~= nil then
-            return darkend(diagnosticColorsMap[severity - 1])
-        end
-        severity = severity - 1
+    local nextSeverity = getNextActiveSeverity(severity)
+    if nextSeverity ~= -1 then
+        return darkened(diagnosticColorsMap[nextSeverity])
     end
 
     -- If not, return the default background color for the status line
-    return STATUS_LINE_BACKGROUND_DARK
+    return diagnosticColorsMap[-1]
 end
 
 --- Generates a component table for the given diagnostic
@@ -62,7 +75,7 @@ local function generateDiagnosticComponentTable(severity, color, icon)
         hl = function()
             return {
                 fg = color,
-                bg = darkend(color),
+                bg = darkened(color),
                 style = 'bold',
             }
         end,
@@ -71,7 +84,7 @@ local function generateDiagnosticComponentTable(severity, color, icon)
             {
                 str = 'left_rounded',
                 hl = {
-                    fg = darkend(color),
+                    fg = darkened(color),
                     bg = getNextActiveSeverityColor(severity) -- Used so seperator colors are correct
                 },
             }
@@ -81,7 +94,8 @@ local function generateDiagnosticComponentTable(severity, color, icon)
             hl = {
                 fg = color,
             },
-        }
+        },
+        name = 'diag' .. severity,
     }
 end
 
@@ -108,6 +122,10 @@ function FelineConfig()
                 name = 'vi_mode',
                 opts = { show_mode_name = true },
             },
+            priority = 2,
+            short_provider = function()
+                return string.sub(require('feline.providers.vi_mode').get_vim_mode(), 1, 1)
+            end,
             hl = function()
                 return {
                     fg = util.darken(colors.dark3, 0.12), -- '#222436',
@@ -136,6 +154,7 @@ function FelineConfig()
                     type = 'relative'
                 }
             },
+            priority = 1,
             short_provider = {
                 name = 'file_info',
                 opts = {
@@ -169,6 +188,13 @@ function FelineConfig()
                     file_readonly_icon = '󰈡',
                 },
             },
+            short_provider = {
+                name = 'file_info',
+                opts = {
+                    file_modified_icon = '󰝒',
+                    file_readonly_icon = '󰈡',
+                }
+            },
             hl = {
                 fg = colors.comment,
                 bg = TERMINAL_BACKGROUND, -- Background color
@@ -182,68 +208,140 @@ function FelineConfig()
                 bg = vi_mode_colors.NORMAL,
                 style = 'bold',
             },
-            left_sep = {
-                str = '█',
-                hl = {
-                    fg = vi_mode_colors.NORMAL,
-                    bg = vi_mode_colors.INSERT,
-                }
-            },
             right_sep = {
                 str = 'block',
                 hl = {
                     fg = vi_mode_colors.NORMAL,
                 }
-            }
+            },
+            left_sep = {
+                str = '█',
+                hl = {
+                    fg = vi_mode_colors.NORMAL,
+                    bg = vi_mode_colors.INSERT,
+                }
+            },
+        },
+        bland_line_percentage = {
+            provider = 'line_percentage',
+            hl = {
+                fg = colors.comment,
+                bg = TERMINAL_BACKGROUND, -- Background color
+            },
+            right_sep = {
+                str = ' ',
+                hl = {
+                    fg = colors.comment,
+                    bg = TERMINAL_BACKGROUND, -- Background color
+                },
+            },
+            left_sep = {
+                str = ' ',
+                hl = {
+                    fg = colors.comment,
+                    bg = TERMINAL_BACKGROUND, -- Background color
+                },
+            },
         },
         line_and_col = {
             provider = 'position',
+            truncate_hide = true,
+            priority = 4,
             hl = {
                 fg = colors.black,
                 bg = vi_mode_colors.INSERT,
                 style = 'bold',
             },
             left_sep = {
-                str = ' █',
+                str = '█',
                 hl = {
                     fg = vi_mode_colors.INSERT,
                     bg = STATUS_LINE_BACKGROUND,
                 },
             },
             right_sep = {
-                str = 'block',
+                str = ' ',
                 hl = {
-                    fg = vi_mode_colors.INSERT,
+                    fg = vi_mode_colors.NORMAL,
+                    bg = vi_mode_colors.INSERT,
                 }
-            }
+            },
         },
         file_encoding = {
             provider = 'file_encoding',
+            truncate_hide = true,
+            priority = 4,
             hl = {
                 fg = STATUS_LINE_TEXT,
                 bg = colors.dark3,
             },
             left_sep = {
                 str = '█',
+                always_visible = false,
                 hl = function()
                     return {
                         fg = STATUS_LINE_BACKGROUND,
-                        bg = getNextActiveSeverityColor(5),
+                        bg = getNextActiveSeverityColor(5), -- 5 used so that it scans for all
                     }
                 end,
             },
+            right_sep = {
+                str = ' ',
+                hl = {
+                    fg = vi_mode_colors.INSERT,
+                    bg = STATUS_LINE_BACKGROUND,
+                },
+            },
+        },
+        bland_file_encoding = {
+            provider = 'file_encoding',
+            hl = {
+                fg = colors.comment,
+                bg = TERMINAL_BACKGROUND, -- Background color
+            },
+            right_sep = {
+                str = ' /',
+                hl = {
+                    fg = colors.comment,
+                    bg = TERMINAL_BACKGROUND, -- Background color
+                },
+            },
         },
         git_branch = {
-            provider = function ()
+            provider = function()
                 local current_branch = vim.b.gitsigns_head
                 if current_branch then
-                    return '  ' .. current_branch
+                    return '  ' .. current_branch .. ' '
                 end
                 return ''
             end,
+            truncate_hide = true,
+            priority = 3,
             hl = {
                 fg = STATUS_LINE_TEXT,
                 bg = STATUS_LINE_BACKGROUND_DARK,
+            },
+        },
+        bland_git_branch = {
+            provider = function()
+                local current_branch = vim.b.gitsigns_head
+                if current_branch then
+                    return '  ' .. current_branch .. ' '
+                end
+                return ''
+            end,
+            truncate_hide = true,
+            priority = 1,
+            hl = {
+                fg = colors.comment,
+                bg = TERMINAL_BACKGROUND, -- Background color
+            },
+            left_sep = {
+                str = ' /',
+                hl = {
+                    fg = colors.comment,
+                    bg = TERMINAL_BACKGROUND, -- Background color
+                },
             },
         }
     }
@@ -276,7 +374,8 @@ function FelineConfig()
     local inactive = {
         -- left
         {
-            c.bland_file_name
+            c.bland_file_name,
+            c.bland_git_branch,
         },
         -- middle
         {
@@ -284,7 +383,8 @@ function FelineConfig()
         },
         -- right
         {
-
+            c.bland_file_encoding,
+            c.bland_line_percentage,
         }
     }
 
