@@ -27,11 +27,11 @@ MapNorm("<leader>fb", telescope_builtin.current_buffer_fuzzy_find, "Grep current
 local todo_comments = require('todo-comments')
 MapNorm("<leader>nt", todo_comments.jump_next, "Next todo-type comment")
 MapNorm("<leader>Nt", todo_comments.jump_prev, "Next todo-type comment")
-MapNorm("<leader>lt", function () vim.cmd("TodoTelescope") end, "Search all todo-type comments with telescope")
+MapNorm("<leader>lt", function() vim.cmd("TodoTelescope") end, "Search all todo-type comments with telescope")
 
 -- AutoSession bindings --
 MapNorm("<leader>ss", function()
----@diagnostic disable-next-line: missing-fields
+    ---@diagnostic disable-next-line: missing-fields
     saveWithCheck({ file = vim.fn.expand("%:p") })
     vim.cmd("AutoSession search")
 end, "Search sessions with telescope")
@@ -65,7 +65,7 @@ function DefaultKeymaps(bufnr)
     vim.keymap.set("n", "K", vim.lsp.buf.hover, options)
     vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, options)
     vim.keymap.set("n", "<leader>a", vim.lsp.buf.code_action, options)
-    vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, options)
+    vim.keymap.set("n", "<leader>fm", vim.lsp.buf.format, options)
     vim.keymap.set("n", "<leader>le", vim.diagnostic.setloclist, options)
     vim.keymap.set("n", "<leader>ne", function()
         vim.diagnostic.jump({ count = 1 })
