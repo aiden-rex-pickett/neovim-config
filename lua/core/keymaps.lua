@@ -79,10 +79,12 @@ end
 
 MapNorm("<leader>e", vim.diagnostic.open_float, "Open diagnostic window")
 
--- Nvim-Cmp keymaps --
-local cmp = require("cmp")
-cmp.setup({
-    mapping = cmp.mapping.preset.insert({
+--- Constructs and returns the keymap table for nvim-cmp's mapping field
+--- @returns The newly constructed keymap table, to be used as an argument to
+--- cmp.mapping.preset.insert()
+local function cmpKeymapTable()
+    local cmp = require("cmp")
+    return {
         ["<C-n>"] = cmp.mapping.select_next_item(),
         ["<C-p>"] = cmp.mapping.select_prev_item(),
         ["<Tab>"] = cmp.mapping.confirm({ select = true }),
@@ -95,7 +97,10 @@ cmp.setup({
             fallback()
         end
         ),
-    })
-})
+    }
+end
 
-return { attachFunction = DefaultKeymaps }
+return {
+    attachFunction = DefaultKeymaps,
+    getCmpKeymaps = cmpKeymapTable
+}

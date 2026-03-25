@@ -14,7 +14,9 @@ cmp.setup({
         { name = "files" }
     }),
 
-    enabled = function ()
+    enabled = function()
         return not context.in_treesitter_capture("comment")
-    end
+    end,
+
+    mapping = cmp.mapping.preset.insert(require("core.keymaps").getCmpKeymaps())
 })
