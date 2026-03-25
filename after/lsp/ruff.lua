@@ -1,6 +1,6 @@
 return {
     on_attach = function(client, bufner)
-        require("core.keymaps").attachFunction(bufner)
+        require("core.keymaps").lspAttachFunction(bufner)
     end,
     init_options = {
         settings = {

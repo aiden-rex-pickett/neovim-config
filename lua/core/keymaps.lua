@@ -55,8 +55,8 @@ MapNorm("<C-u>", function()
     vim.cmd("normal " .. vim.wo.scroll .. "k"); vim.cmd("normal zz")
 end, "center cursor as you move half page up")
 
--- LSP keymaps --
--- This is the default keymaps that all servers use --
+--- LSP keymaps function, used by lsp config files as the onAttach function
+--- @param bufnr number The buffer to apply the LSP keymaps to
 function DefaultKeymaps(bufnr)
     local options = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, options)
@@ -101,6 +101,6 @@ local function cmpKeymapTable()
 end
 
 return {
-    attachFunction = DefaultKeymaps,
+    lspAttachFunction = DefaultKeymaps,
     getCmpKeymaps = cmpKeymapTable
 }
