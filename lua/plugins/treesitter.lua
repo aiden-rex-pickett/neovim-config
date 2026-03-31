@@ -2,7 +2,7 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         branch = "master",
-        lazy = false,
+        event = "VeryLazy",
         build = ":TSUpdate",
         config = function()
             require("nvim-treesitter.install").compilers = { "zig" }
@@ -15,5 +15,5 @@ return {
             })
         end,
     },
-    { "nvim-treesitter/playground" },
+    { "nvim-treesitter/playground", event = "VeryLazy" },
 }
