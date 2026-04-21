@@ -42,8 +42,8 @@ end, "Search sessions with telescope")
 -- Splitting keymaps --
 MapNorm("<leader>ws", vim.cmd.split, "create a split window")
 MapNorm("<leader>wv", vim.cmd.vsplit, "create a vertical split window")
-MapNorm("<leader>w=", function() vim.cmd("vertical resize +4") end, "move vertical dividing line to the right")
-MapNorm("<leader>w-", function() vim.cmd("vertical resize -4") end, "move vertical dividing line to the left")
+MapNorm("<leader>w=", function() vim.cmd("vertical resize +8") end, "move vertical dividing line to the right")
+MapNorm("<leader>w-", function() vim.cmd("vertical resize -8") end, "move vertical dividing line to the left")
 MapNorm("<leader>w+", function() vim.cmd("resize +4") end, "move horizontal dividing line to down")
 MapNorm("<leader>w_", function() vim.cmd("resize -4") end, "move horizontal dividing line to up")
 

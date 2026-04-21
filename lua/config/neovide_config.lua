@@ -1,4 +1,4 @@
-vim.o.guifont = "JetBrainsMono Nerd Font Mono:h18"
+vim.o.guifont = "JetBrainsMono Nerd Font Mono:h18:#e-subpixelantialias"
 
 vim.g.neovide_title_background_color = string.format(
     "%x",
