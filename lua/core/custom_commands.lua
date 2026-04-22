@@ -7,13 +7,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- AUTOCMDS --
 
---- Updates the cwd to be the root of the project, as per the markers defined below
+--- Updates the cwd to be the root of the project, as per the markers defined below.
+--- 
+--- @return boolean true if the cwd was changed, false if not 
 local function changeToRootDirectory()
     local root = vim.fs.root(0, { '.git' }) -- Change root markers here
 
     if root and root ~= vim.fn.getcwd() then
         vim.cmd("cd " .. root)
+        return true
     end
+    return false
 end
 
 -- Changes to root whenever you go to type a command

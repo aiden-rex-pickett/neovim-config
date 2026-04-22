@@ -37,7 +37,14 @@ MapNorm("<leader>ss", function()
 end, "Search sessions with telescope")
 MapNorm("<leader>sd", function()
     vim.cmd("AutoSession deletePicker")
-end, "Search sessions with telescope")
+end, "Delete sessions with telescope")
+MapNorm("<leader>sc", function()
+    if not require("core.custom_commands").changeToRootFunction() then
+        vim.cmd("cd %:p:h")
+    end
+    require("auto-session").save_session(vim.fn.getcwd(), { show_message = true })
+end, "Create a new session for the CWD of the open file")
+-- TODO: Mapping for creating a new session?
 
 -- Splitting keymaps --
 MapNorm("<leader>ws", vim.cmd.split, "create a split window")
