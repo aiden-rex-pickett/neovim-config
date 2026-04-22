@@ -53,6 +53,11 @@ MapNorm("<leader>w=", function() vim.cmd("vertical resize +8") end, "move vertic
 MapNorm("<leader>w-", function() vim.cmd("vertical resize -8") end, "move vertical dividing line to the left")
 MapNorm("<leader>w+", function() vim.cmd("resize +4") end, "move horizontal dividing line to down")
 MapNorm("<leader>w_", function() vim.cmd("resize -4") end, "move horizontal dividing line to up")
+MapNorm("<leader>wt", function()
+    vim.cmd("botright 30vsplit")
+    vim.cmd.term()
+    vim.cmd("startinsert")
+end, "open small window with terminal on the right")
 
 -- Convience overrides --
 MapNorm("<C-d>", function()
