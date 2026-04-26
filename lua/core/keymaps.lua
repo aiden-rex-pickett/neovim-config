@@ -44,7 +44,6 @@ MapNorm("<leader>sc", function()
     end
     require("auto-session").save_session(vim.fn.getcwd(), { show_message = true })
 end, "Create a new session for the CWD of the open file")
--- TODO: Mapping for creating a new session?
 
 -- Splitting keymaps --
 MapNorm("<leader>ws", vim.cmd.split, "create a split window")
