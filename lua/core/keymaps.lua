@@ -57,6 +57,11 @@ MapNorm("<leader>wt", function()
     vim.cmd.term()
     vim.cmd("startinsert")
 end, "open small window with terminal on the right")
+MapNorm("<leader>wT", function()
+    vim.cmd("botright 90vsplit")
+    vim.cmd.term()
+    vim.cmd("startinsert")
+end, "open large window with terminal on the right")
 
 -- Convience overrides --
 MapNorm("<C-d>", function()
