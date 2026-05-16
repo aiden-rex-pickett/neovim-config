@@ -17,4 +17,16 @@ local config = {
     },
 }
 
+-- Done so that java files are automatically written when I stop typing
+-- This way jdtls can be working on the properly updated version of the buffer
+vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+    pattern = "*.java",
+    callback = function()
+        local buf = vim.api.nvim_get_current_buf()
+        if vim.bo[buf].modified and vim.bo[buf].buftype == "" then
+            vim.cmd("silent! write")
+        end
+    end
+})
+
 require('jdtls').start_or_attach(config);
