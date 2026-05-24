@@ -55,12 +55,12 @@ MapNorm("<leader>w_", function() vim.cmd("resize -4") end, "move horizontal divi
 
 -- Open terminal windows on the right
 MapNorm("<leader>wt", function()
-    vim.cmd("botright 30vsplit")
+    vim.cmd("botright 40vsplit")
     vim.cmd.term()
     vim.cmd("startinsert")
 end, "open small window with terminal on the right")
 MapNorm("<leader>wT", function()
-    vim.cmd("botright 90vsplit")
+    vim.cmd("botright 120vsplit")
     vim.cmd.term()
     vim.cmd("startinsert")
 end, "open large window with terminal on the right")
