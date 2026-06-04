@@ -8,7 +8,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- AUTOCMDS --
 
 --- Updates the cwd to be the root of the project, as per the markers defined below.
----
 --- @return boolean true if the cwd was changed, false if not
 local function changeToRootDirectory()
     local root = vim.fs.root(0, { '.git' }) -- Change root markers here
@@ -48,7 +47,14 @@ local function saveSessionIfInCorrectCwd(args)
     local current_cwd = string.gsub(args.file, '\\', '/')
     if vim.bo.filetype == "netrw" or vim.bo.buftype == "terminal" or args.file == "" then return end
     if session_cwd == string.sub(current_cwd, 1, #session_cwd) then
+        local a = vim.fn.argv()
+        vim.cmd("%argdelete")
         require('auto-session').save_session(nil, { show_message = false })
+        local i = 1
+        while i < #a do
+            vim.cmd("argadd " .. a[i])
+            i = i + 1
+        end
     end
 end
 
