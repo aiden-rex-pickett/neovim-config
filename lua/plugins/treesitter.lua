@@ -5,7 +5,7 @@ return {
         event = "VeryLazy",
         build = ":TSUpdate",
         config = function()
-            require("nvim-treesitter.install").compilers = { "zig" }
+            require("nvim-treesitter.install").compilers = { "gcc" }
             require("nvim-treesitter.configs").setup({
                 ensure_installed = { "lua", "vim", "vimdoc", "c" },
                 highlight = { enable = true, additional_vim_regex_highlighting = false },
