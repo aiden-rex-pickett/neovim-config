@@ -22,12 +22,6 @@ end
 -- Changes to root whenever you go to type a command
 vim.api.nvim_create_autocmd('CmdlineEnter', { callback = changeToRootDirectory })
 
-vim.api.nvim_create_autocmd('TermClose', {
-    callback = function()
-        vim.cmd('bdelete')
-    end
-})
-
 -- Open up picker for sessions on launch with no file argument
 vim.api.nvim_create_autocmd('VimEnter', {
     callback = function()

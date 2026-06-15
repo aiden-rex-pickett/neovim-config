@@ -3,10 +3,10 @@ return {
     {
         "L3MON4D3/LuaSnip",
         version = "v2.*",
-        event = "VeryLazy"
+        event = "VeryLazy",
         -- This will eventually fix the slow startup and allow for
         -- better lsp integration when I figure it out:
-        -- build = "make install_jsregexp CC=gcc",
+        build = "make install_jsregexp CC=gcc",
     },
 
     -- nvim-cmp, completion engine --

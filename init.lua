@@ -1,4 +1,4 @@
--- AIDEN PICKETT WINDOWS 11 NEOVIM CONFIG FILE --
+-- AIDEN PICKETT NEOVIM CONFIG FILE --
 
 -- Globals for editor control --
 DEFAULT_COLORSCHEME = "tokyonight"
